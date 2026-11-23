@@ -35,13 +35,13 @@
 
   <h3>Algorithm write-ups</h3>
   <p>I learned EDGE by writing cascades for algorithms that stress it in different ways. Each has a tutorial, hosted on <a href="https://edge-lang.org">edge-lang.org</a>.</p>
-  <div class="card"><span class="tag">Write-up</span><h3>Direction-optimizing BFS</h3>
+  <div class="card"><h3>Direction-optimizing BFS</h3>
     <p>Top-down and bottom-up traversal turn out to be one candidate-edge computation, differing only in which mask is applied first. The implicit graph transposition becomes explicit through a rank-name flip on the graph tensor. Connects to the switching heuristics in Beamer et al. (2012), Gunrock, Ligra and XBFS.</p>
     <p class="meta">With T. Odemuyiwa, S. Porumbescu, J. Emer, J. Owens · arXiv in preparation</p>    <p><a href="assets/dobfs-writeup.pdf">Read the write-up (PDF)</a> &middot; <a href="https://edge-lang.org">Tutorial on edge-lang.org</a></p></div>
-  <div class="card"><span class="tag">Write-up</span><h3>Bellman&ndash;Ford with negative-cycle detection</h3>
+  <div class="card"><h3>Bellman&ndash;Ford with negative-cycle detection</h3>
     <p>Relaxation as a (min, +) computation, one generation of distances per round. The <code>min</code> appears twice with two jobs: carrying the old distance forward, and reducing competing sources. That distinction later decided where atomics were needed on the GPU.</p>
     <p class="meta">With T. Odemuyiwa, S. Porumbescu, J. Emer, J. Owens · arXiv in preparation</p>    <p><a href="assets/bellman-ford-writeup.pdf">Read the write-up (PDF)</a> &middot; <a href="https://edge-lang.org">Tutorial on edge-lang.org</a></p></div>
-  <div class="card"><span class="tag">Write-up</span><h3>Push-relabel max-flow, as a 23-Einsum cascade</h3>
+  <div class="card"><h3>Push-relabel max-flow, as a 23-Einsum cascade</h3>
     <p>A bulk-synchronous cascade: saturate the source, then each generation finds active vertices, tests admissible edges, pushes and relabels, stopping when no vertex holds excess. Bulk-synchronous execution has no read-after-write, so the active and admissible sets are recomputed after the push. The <code>select-any</code> steps state the algorithm's nondeterminism exactly: a concrete selection order is a mapping choice, not a different algorithm. Deriving the serial cascade from the parallel one adds a single-vertex selector and real branching (push <em>or</em> relabel). That holds for this derivation; whether the general transformation can be formalized is an open question I am working on.</p>
     <p class="meta">With T. Odemuyiwa</p>    <p><a href="assets/max-flow-writeup.pdf">Read the write-up (PDF)</a> &middot; <a href="https://edge-lang.org">Tutorial on edge-lang.org</a></p></div>
 
