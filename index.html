@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sanjana Mali · Graph algorithms, tensor algebra, GPU systems</title>
+<meta name="description" content="Sanjana Mali is an MS CS student at UC Davis working on EDGE, a tensor-algebra framework for specifying, verifying and lowering graph algorithms to GPUs.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="nav"><div class="nav-in">
+  <a class="brand" href="#top">Sanjana Mali</a>
+  <a href="#research">Research</a><a href="#projects">Projects</a><a href="#journey">Journey</a><a href="#mentoring">Mentoring</a><a href="#goals">Goals</a><a href="#contact">Contact</a>
+</div></header>
+<main id="top">
+
+<section class="hero">
+  <p class="meta">MS Computer Science · UC Davis · expected June 2027</p>
+  <h1>Sanjana Mali</h1>
+  <p class="lede">I work on the path from a high-level graph algorithm to the GPU code that runs it: how to specify it precisely, how to check the specification is right, and what the translation to hardware forces you to decide.</p>
+  <p>I am a master's student in Prof. <a href="https://www.ece.ucdavis.edu/~jowens/">John Owens</a>' group at UC Davis, where I work with EDGE, a tensor-algebra framework that writes graph algorithms as cascades of extended Einsums. Before research, I spent four years building payment systems at ACI Worldwide.</p>
+  <div class="links">
+    <a class="primary" href="#research">See my research</a>
+    <a href="https://github.com/sanjanamali8">GitHub</a>
+    <a href="https://www.linkedin.com/in/sanjanamali">LinkedIn</a>
+    <a href="mailto:sanjana.mali1583@gmail.com">Email</a>
+  </div>
+</section>
+
+<section id="research">
+  <h2>Research</h2>
+  <p>EDGE (Extended General Einsums for Graph Algorithms) was developed by my mentor Toluwanimi Odemuyiwa with Joel Emer and John Owens (<a href="https://arxiv.org/abs/2404.11591">arXiv:2404.11591</a>). It separates <em>what</em> a graph algorithm computes from <em>how</em> it executes. That separation makes it possible to reason about parallel execution strategies, memory access patterns and GPU mappings from one specification. My work has three parts: writing algorithms in EDGE, building tools that verify and explain them, and lowering them by hand to find what a compiler would need to check.</p>
+
+  <h3>Algorithm write-ups</h3>
+  <p>I learned EDGE by writing cascades for algorithms that stress it in different ways. Each has a tutorial, hosted on <a href="https://edge-lang.org">edge-lang.org</a>.</p>
+  <div class="card"><span class="tag">Write-up</span><h3>Direction-optimizing BFS</h3>
+    <p>Top-down and bottom-up traversal turn out to be one candidate-edge computation, differing only in which mask is applied first. The implicit graph transposition becomes explicit through a rank-name flip on the graph tensor. Connects to the switching heuristics in Beamer et al. (2012), Gunrock, Ligra and XBFS.</p>
+    <p class="meta">With T. Odemuyiwa, S. Porumbescu, J. Emer, J. Owens · arXiv in preparation</p></div>
+  <div class="card"><span class="tag">Write-up</span><h3>Bellman&ndash;Ford with negative-cycle detection</h3>
+    <p>Relaxation as a (min, +) computation, one generation of distances per round. The <code>min</code> appears twice with two jobs: carrying the old distance forward, and reducing competing sources. That distinction later decided where atomics were needed on the GPU.</p>
+    <p class="meta">With T. Odemuyiwa, S. Porumbescu, J. Emer, J. Owens · arXiv in preparation</p></div>
+  <div class="card"><span class="tag">Write-up</span><h3>Push-relabel max-flow, as a 23-Einsum cascade</h3>
+    <p>A bulk-synchronous cascade: saturate the source, then each generation finds active vertices, tests admissible edges, pushes and relabels, stopping when no vertex holds excess. Bulk-synchronous execution has no read-after-write, so the active and admissible sets are recomputed after the push. The <code>select-any</code> steps state the algorithm's nondeterminism exactly: a concrete selection order is a mapping choice, not a different algorithm. Deriving the serial cascade from the parallel one adds a single-vertex selector and real branching (push <em>or</em> relabel). That holds for this derivation; whether the general transformation can be formalized is an open question I am working on.</p>
+    <p class="meta">With T. Odemuyiwa</p></div>
+
+  <h3>edge-lang.org and feedback to the language</h3>
+  <p>I built <a href="https://edge-lang.org">edge-lang.org</a>, which hosts my tutorials alongside the rest of the EDGE Zoo and lets anyone publish their own cascades, so the collection can grow beyond the algorithms written inside the group. Writing three algorithms that stress the notation in different ways produced concrete feedback, which I passed on to the language's authors.</p>
+
+  <h3>edge-workbench: verifying and explaining AI-written specs</h3>
+  <p>People will increasingly write EDGE specs with AI, so they need proof the spec is correct and a way to see what it does. <a href="https://github.com/owensgroup/edge-workbench">edge-workbench</a> checks a tutorial, its cascade and an independent verifier against each other, runs the cascade in EDGE's reference interpreter, and publishes an interactive page that steps through each Einsum and shows the exact tensor values. Live examples: <a href="https://edge-lang.org/assets/viz/maximum-flow">max-flow</a> and <a href="https://edge-lang.org/assets/viz/bellman-ford">Bellman&ndash;Ford</a>.</p>
+  <p><em>Why I built it.</em> Max-flow was the hardest algorithm I wrote. A vertex with excess 5 cannot push 5 to every neighbour at once, so the cascade needed an explicit selection step. I could hand-check a few graphs but could not know it worked on every graph, and slides were a poor way to present 23 Einsums to my collaborators. So I generated a trace of a sequential implementation, then built a visualizer, an evaluator, oracle verification, and finally walkthrough pages anyone can use.</p>
+  <ul class="plain">
+    <li>Seven stages, each of which lists every problem it finds and stops before the next.</li>
+    <li>A result is trusted only if the tutorial and spec agree, the IR is well-formed, and the answers match a verifier that uses a different algorithm.</li>
+    <li>DOBFS, Bellman&ndash;Ford, max-flow and set-cover run end to end. Set-cover, which is not a graph algorithm and is shown as a bipartite graph, was a stress test: the workbench caught 4 bugs in a newly written cascade. Three were semantic, caught by the interpreter. The fourth was a logic error caught only by the oracle: as written, the cascade reported a non-cover as a solution on 10 of 14 instances.</li>
+  </ul>
+
+  <h3>Exploration: Bellman&ndash;Ford in Gunrock</h3>
+  <p>I translated the EDGE Bellman&ndash;Ford spec into a <a href="https://github.com/gunrock/gunrock">Gunrock</a> kernel by hand and profiled it on an NVIDIA V100 with Nsight Compute, recording the decision each step forced. The main finding is a rule a compiler could check: the reduce over sources has no source rank in its output, which is a write conflict on the GPU. Because <code>min</code> is associative and commutative, a lock-free atomic min is a legal realization; an operator without those properties would need explicit ordering. Gunrock's own SSSP updates distances in place, while my kernel keeps current and next-round buffers. These are the same Einsum under two buffering policies, so buffering is an implementation detail and not part of the spec. Code: <a href="https://github.com/owensgroup/edge_gunrock_dse_code">edge_gunrock_dse_code</a>.</p>
+
+  <h3>What is next</h3>
+  <ul class="plain">
+    <li><strong>Authoring and explaining:</strong> AI drafts the spec; the toolchain checks, verifies and visualizes it.</li>
+    <li><strong>Spec to implementation:</strong> lowering EDGE to GraphBLAST, building on the Gunrock exploration, toward a compiler that enables performance analysis at every layer.</li>
+    <li><strong>Serial and parallel:</strong> a systematic comparison of the two push-relabel cascades.</li>
+  </ul>
+</section>
+
+<section id="projects">
+  <h2>Other projects</h2>
+  <div class="card"><h3>CUDA GEMM from scratch</h3>
+    <p>Six progressive optimizations (coalescing, shared-memory tiling, 1D/2D register blocking, vectorized loads), reaching 10,200 GFLOP/s, 64% of cuBLAS. Each variant profiled with Nsight Compute.</p>
+    <p class="meta">C++, CUDA · Feb 2026</p></div>
+  <div class="card"><h3>Microarchitecture experiments with gem5</h3>
+    <p>Studied the effect of pipeline width, ROB size and register count on ILP; evaluated cache designs and blocking on matrix multiply; diagnosed false sharing with cycle-level cache simulation.</p>
+    <p class="meta">gem5, C++, Python · ECS 201A, Winter 2025</p></div>
+</section>
+
+<section id="journey">
+  <h2>Journey</h2>
+  <ul class="tl">
+    <li><span class="when">2016 &ndash; 2020</span><strong>BE in Computer Science, Pune Institute of Computer Technology</strong>GPA 9.35 / 10. Data structures, operating systems, networks.</li>
+    <li><span class="when">2020 &ndash; 2024</span><strong>Software Engineer, ACI Worldwide</strong>Payments infrastructure at scale. I shipped a multi-factor authentication system that reached 70% client adoption in 30 days, built Apple Pay, Google Pay, PayPal and Venmo workflows that cut payment completion time by 60%, and led a migration of four applications from Angular 7 to 18.</li>
+    <li><span class="when">2024 &ndash; present</span><strong>MS in Computer Science, UC Davis</strong>GPA 4.0 / 4.0. I arrived from industry with no research or architecture background. Jason Lowe-Power's computer architecture class (gem5) changed my direction, and I asked Prof. Owens for a chance. At first I asked my mentor about every Einsum I wrote; by the end I was writing cascades of my own. Since June 2025 I have worked on EDGE. I also spent one quarter as a graduate student researcher on epidemic (SEIR) simulations in MATLAB, C++ and Rust.</li>
+  </ul>
+  <p>Industry taught me to care about reliability, testing and what happens in production. Research let me ask why a system is shaped the way it is. The workbench and the Gunrock work are where those two habits meet.</p>
+</section>
+
+<section id="mentoring">
+  <h2>Mentoring and service</h2>
+  <ul class="plain">
+    <li><strong>Teaching assistant, ECS 193 Capstone Projects</strong> (Jan &ndash; Dec 2025): mentored 8 teams (32 students) through the full software lifecycle, guiding architecture and technical decisions.</li>
+    <li><strong>Peer advisor, GGCS program at UC Davis</strong>, and GGCS Fellow-PR.</li>
+  </ul>
+</section>
+
+<section id="goals">
+  <h2>Goals</h2>
+  <p>When I started my MS I did not think I could do research or formulate open-ended problems of my own. Now I want the time a PhD gives to take this further. I am interested in the whole stack: how a high-level specification maps to different hardware and memory systems, and how to keep it correct on the way down. The questions I keep returning to are how to formalize the transformation from sequential to parallel algorithms, how to carry specifications down to lower levels, which parts of a mapping can be checked automatically, and how to make specifications that people, and increasingly AI, can write and still trust. I am open to work beyond EDGE and beyond GPUs.</p><p>After the PhD I expect to build compilers and hardware-software tools, in a research lab or in industry; I am keeping that open.</p>
+</section>
+
+<section id="contact">
+  <h2>Contact</h2>
+  <p>I am happy to talk about EDGE, graph algorithms on GPUs, or PhD opportunities.</p>
+  <div class="links">
+    <a class="primary" href="mailto:sanjana.mali1583@gmail.com">sanjana.mali1583@gmail.com</a>
+    <a href="https://github.com/sanjanamali8">github.com/sanjanamali8</a>
+    <a href="https://www.linkedin.com/in/sanjanamali">linkedin.com/in/sanjanamali</a>
+  </div>
+</section>
+</main>
+<footer>© 2026 Sanjana Mali. Last updated November 2026.</footer>
+</body>
+</html>

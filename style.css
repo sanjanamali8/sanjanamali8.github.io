@@ -1,0 +1,36 @@
+:root{--bg:#fbfaf7;--ink:#1c1b1a;--muted:#6a665f;--line:#e4e0d8;--accent:#1f5f5b;--accent-soft:#e3efed;--max:760px}
+@media (prefers-color-scheme:dark){:root{--bg:#161615;--ink:#ece9e2;--muted:#9c978d;--line:#2e2d2a;--accent:#7cc4bd;--accent-soft:#1f2e2c}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 Georgia,"Iowan Old Style",serif}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}
+header.nav{position:sticky;top:0;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:5}
+.nav-in{max-width:var(--max);margin:0 auto;padding:.8rem 1.25rem;display:flex;gap:1.1rem;align-items:center;flex-wrap:wrap;font:600 .85rem system-ui,sans-serif}
+.nav-in .brand{margin-right:auto;color:var(--ink);text-decoration:none;font-size:.95rem}
+.nav-in a{color:var(--muted);text-decoration:none}.nav-in a:hover{color:var(--accent)}
+main{max-width:var(--max);margin:0 auto;padding:0 1.25rem 4rem}
+section{padding:3rem 0 .5rem;border-bottom:1px solid var(--line)}
+section:last-of-type{border:0}
+h1{font-size:2.6rem;line-height:1.1;margin:.2rem 0 .6rem;letter-spacing:-.02em}
+h2{font:700 .8rem system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 1.2rem}
+h3{font-size:1.15rem;margin:1.6rem 0 .3rem}
+p{margin:.6rem 0}
+.lede{font-size:1.2rem;color:var(--ink)}
+.meta{font:.85rem system-ui,sans-serif;color:var(--muted)}
+.hero{padding-top:3.5rem}
+.links{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.2rem;font:600 .9rem system-ui,sans-serif}
+.links a{padding:.45rem .9rem;border:1px solid var(--line);border-radius:999px;text-decoration:none;color:var(--ink)}
+.links a.primary{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.links a:hover{border-color:var(--accent)}
+.card{border:1px solid var(--line);border-radius:10px;padding:1rem 1.2rem;margin:1rem 0;background:color-mix(in srgb,var(--bg) 70%,var(--accent-soft))}
+.card h3{margin:0 0 .2rem}
+.tag{display:inline-block;font:600 .7rem system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .5rem;border-radius:4px;background:var(--accent-soft);color:var(--accent);margin-right:.4rem}
+.tl{list-style:none;padding:0;margin:0;border-left:2px solid var(--line)}
+.tl li{position:relative;padding:0 0 1.4rem 1.3rem}
+.tl li::before{content:"";position:absolute;left:-6px;top:.55rem;width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.tl .when{font:600 .8rem system-ui,sans-serif;color:var(--muted)}
+.tl strong{display:block}
+ul.plain{padding-left:1.1rem}
+code{font:.88em ui-monospace,Menlo,monospace;background:var(--accent-soft);padding:.1em .35em;border-radius:4px}
+footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;color:var(--muted);font:.8rem system-ui,sans-serif;border-top:1px solid var(--line)}
+@media(max-width:560px){h1{font-size:2.1rem}body{font-size:16px}}
