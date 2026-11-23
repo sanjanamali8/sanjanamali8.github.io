@@ -34,3 +34,7 @@ ul.plain{padding-left:1.1rem}
 code{font:.88em ui-monospace,Menlo,monospace;background:var(--accent-soft);padding:.1em .35em;border-radius:4px}
 footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;color:var(--muted);font:.8rem system-ui,sans-serif;border-top:1px solid var(--line)}
 @media(max-width:560px){h1{font-size:2.1rem}body{font-size:16px}}
+
+.portrait{float:right;width:168px;height:168px;border-radius:50%;object-fit:cover;margin:0 0 1rem 1.5rem;border:3px solid var(--accent-soft)}
+@media(max-width:560px){.portrait{width:120px;height:120px;margin-left:1rem}}
+.hero::after{content:"";display:block;clear:both}

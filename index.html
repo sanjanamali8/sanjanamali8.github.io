@@ -15,6 +15,7 @@
 <main id="top">
 
 <section class="hero">
+  <img class="portrait" src="assets/sanjana.jpg" alt="Photo of Sanjana Mali" width="168" height="168">
   <p class="meta">MS Computer Science · UC Davis · expected June 2027</p>
   <h1>Sanjana Mali</h1>
   <p class="lede">I work on the path from a high-level graph algorithm to the GPU code that runs it: how to specify it precisely, how to check the specification is right, and what the translation to hardware forces you to decide.</p>
@@ -23,7 +24,7 @@
     <a class="primary" href="#research">See my research</a>
     <a href="https://github.com/sanjanamali8">GitHub</a>
     <a href="https://www.linkedin.com/in/sanjanamali">LinkedIn</a>
-    <a href="mailto:sanjana.mali1583@gmail.com">Email</a>
+    <a href="mailto:ssmali@ucdavis.edu">Email</a>
   </div>
 </section>
 
@@ -35,13 +36,13 @@
   <p>I learned EDGE by writing cascades for algorithms that stress it in different ways. Each has a tutorial, hosted on <a href="https://edge-lang.org">edge-lang.org</a>.</p>
   <div class="card"><span class="tag">Write-up</span><h3>Direction-optimizing BFS</h3>
     <p>Top-down and bottom-up traversal turn out to be one candidate-edge computation, differing only in which mask is applied first. The implicit graph transposition becomes explicit through a rank-name flip on the graph tensor. Connects to the switching heuristics in Beamer et al. (2012), Gunrock, Ligra and XBFS.</p>
-    <p class="meta">With T. Odemuyiwa, S. Porumbescu, J. Emer, J. Owens · arXiv in preparation</p></div>
+    <p class="meta">With T. Odemuyiwa, S. Porumbescu, J. Emer, J. Owens · arXiv in preparation</p>    <p><a href="assets/dobfs-writeup.pdf">Read the write-up (PDF)</a> &middot; <a href="https://edge-lang.org">Tutorial on edge-lang.org</a></p></div>
   <div class="card"><span class="tag">Write-up</span><h3>Bellman&ndash;Ford with negative-cycle detection</h3>
     <p>Relaxation as a (min, +) computation, one generation of distances per round. The <code>min</code> appears twice with two jobs: carrying the old distance forward, and reducing competing sources. That distinction later decided where atomics were needed on the GPU.</p>
-    <p class="meta">With T. Odemuyiwa, S. Porumbescu, J. Emer, J. Owens · arXiv in preparation</p></div>
+    <p class="meta">With T. Odemuyiwa, S. Porumbescu, J. Emer, J. Owens · arXiv in preparation</p>    <p><a href="assets/bellman-ford-writeup.pdf">Read the write-up (PDF)</a> &middot; <a href="https://edge-lang.org">Tutorial on edge-lang.org</a></p></div>
   <div class="card"><span class="tag">Write-up</span><h3>Push-relabel max-flow, as a 23-Einsum cascade</h3>
     <p>A bulk-synchronous cascade: saturate the source, then each generation finds active vertices, tests admissible edges, pushes and relabels, stopping when no vertex holds excess. Bulk-synchronous execution has no read-after-write, so the active and admissible sets are recomputed after the push. The <code>select-any</code> steps state the algorithm's nondeterminism exactly: a concrete selection order is a mapping choice, not a different algorithm. Deriving the serial cascade from the parallel one adds a single-vertex selector and real branching (push <em>or</em> relabel). That holds for this derivation; whether the general transformation can be formalized is an open question I am working on.</p>
-    <p class="meta">With T. Odemuyiwa</p></div>
+    <p class="meta">With T. Odemuyiwa</p>    <p><a href="assets/max-flow-writeup.pdf">Read the write-up (PDF)</a> &middot; <a href="https://edge-lang.org">Tutorial on edge-lang.org</a></p></div>
 
   <h3>edge-lang.org and feedback to the language</h3>
   <p>I built <a href="https://edge-lang.org">edge-lang.org</a>, which hosts my tutorials alongside the rest of the EDGE Zoo and lets anyone publish their own cascades, so the collection can grow beyond the algorithms written inside the group. Writing three algorithms that stress the notation in different ways produced concrete feedback, which I passed on to the language's authors.</p>
@@ -103,7 +104,8 @@
   <h2>Contact</h2>
   <p>I am happy to talk about EDGE, graph algorithms on GPUs, or PhD opportunities.</p>
   <div class="links">
-    <a class="primary" href="mailto:sanjana.mali1583@gmail.com">sanjana.mali1583@gmail.com</a>
+    <a class="primary" href="mailto:ssmali@ucdavis.edu">ssmali@ucdavis.edu</a>
+    <a href="mailto:sanjana.mali1583@gmail.com">sanjana.mali1583@gmail.com</a>
     <a href="https://github.com/sanjanamali8">github.com/sanjanamali8</a>
     <a href="https://www.linkedin.com/in/sanjanamali">linkedin.com/in/sanjanamali</a>
   </div>
